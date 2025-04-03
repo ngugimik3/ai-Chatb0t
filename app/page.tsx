@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2, MessageCircle, Send, X } from "lucide-react";
 import remarkGfm from "remark-gfm";
@@ -104,7 +104,13 @@ export default function Chat() {
               </CardContent>
 
               <CardFooter>
-                <form onSubmit={handleSubmit} className="flex w-full items-center space-x-2 p-4">
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault(); // Prevent default form submission behavior
+                    handleSubmit(); // Call handleSubmit without passing an event
+                  }}
+                  className="flex w-full items-center space-x-2 p-4"
+                >
                   <Input value={input} onChange={handleInputChange} className="flex-1" placeholder="Type your message here..." />
                   <Button type="submit" className="size-10 rounded-full bg-gray-800 hover:bg-gray-700" disabled={isLoading}>
                     <Send className="size-6 text-white" />
