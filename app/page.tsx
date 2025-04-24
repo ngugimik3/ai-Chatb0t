@@ -2,18 +2,37 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Loader2, MessageCircle, Send, X, Edit, Check, ChevronDown, ChevronUp } from "lucide-react";
+import {
+  Loader2,
+  MessageCircle,
+  Send,
+  X,
+  Edit,
+  Check,
+  ChevronDown,
+} from "lucide-react";
 import remarkGfm from "remark-gfm";
 import ReactMarkdown from "react-markdown";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 import LandingSections from "@/components/LandingSections";
-import { useChat } from "@ai-sdk/react";
+import { useChat } from "ai/react";
 
 export default function Chat() {
   const [isChatOpen, setChatOpen] = useState(false);
@@ -22,15 +41,22 @@ export default function Chat() {
   const [editInput, setEditInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const { messages, input, handleInputChange, handleSubmit, isLoading, stop, reload, error, setMessages } = useChat({
-    api: "/api/gemini",
-  });
+  const {
+    messages,
+    input,
+    handleInputChange,
+    handleSubmit,
+    isLoading,
+    stop,
+    reload,
+    error,
+    setMessages,
+  } = useChat();
 
   useEffect(() => {
     const handleScroll = () => {
       setShowIcon(window.scrollY > 200);
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -55,11 +81,9 @@ export default function Chat() {
 
   const saveEditedMessage = (index: number) => {
     if (editInput.trim() === "") return;
-    
     const updatedMessages = [...messages];
     updatedMessages[index] = { ...updatedMessages[index], content: editInput };
     setMessages(updatedMessages);
-    
     setEditingMessageId(null);
     setEditInput("");
   };
@@ -116,8 +140,13 @@ export default function Chat() {
                   ) : (
                     <div className="flex flex-col gap-2 p-2">
                       {messages.map((msg, index) => (
-                        <div key={index} className={`mb-4 ${msg.role === "user" ? "text-right" : "text-left"}`}>
-                          <div className={`inline-block rounded-lg p-2 ${msg.role === "user" ? "bg-gray-200" : "bg-gray-100"}`}>
+                        <div
+                          key={index}
+                          className={`mb-4 ${msg.role === "user" ? "text-right" : "text-left"}`}
+                        >
+                          <div
+                            className={`inline-block rounded-lg p-2 ${msg.role === "user" ? "bg-gray-200" : "bg-gray-100"}`}
+                          >
                             {editingMessageId === index ? (
                               <div className="flex flex-col gap-2">
                                 <Input
@@ -148,7 +177,7 @@ export default function Chat() {
                                 <ReactMarkdown
                                   remarkPlugins={[remarkGfm]}
                                   components={{
-                                    code({ node, inline, className, children, ...props }) {
+                                    code({ inline, children, ...props }) {
                                       return inline ? (
                                         <code className="bg-gray-200 px-1 rounded" {...props}>
                                           {children}
@@ -160,18 +189,14 @@ export default function Chat() {
                                       );
                                     },
                                     ul: ({ children }) => (
-                                      <ul className="list-disc ml-4 pl-2">
-                                        {children}
-                                      </ul>
+                                      <ul className="list-disc ml-4 pl-2">{children}</ul>
                                     ),
                                     ol: ({ children }) => (
-                                      <ol className="list-decimal ml-4 pl-2">
-                                        {children}
-                                      </ol>
+                                      <ol className="list-decimal ml-4 pl-2">{children}</ol>
                                     ),
                                     li: ({ children }) => (
                                       <li className="pl-4 space-y-1">{children}</li>
-                                    )
+                                    ),
                                   }}
                                 >
                                   {msg.content}
@@ -236,7 +261,11 @@ export default function Chat() {
                     className="flex-1"
                     placeholder="Type your message here..."
                   />
-                  <Button type="submit" className="size-10 rounded-full bg-gray-800 hover:bg-gray-700" disabled={isLoading}>
+                  <Button
+                    type="submit"
+                    className="size-10 rounded-full bg-gray-800 hover:bg-gray-700"
+                    disabled={isLoading}
+                  >
                     <Send className="size-6 text-white" />
                   </Button>
                 </form>
